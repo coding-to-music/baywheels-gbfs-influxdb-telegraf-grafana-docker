@@ -1,6 +1,6 @@
 # baywheels-gbfs-influxdb-telegraf-grafana-docker
 
-# 🚀 🚀
+# 🚀 Using Docker scrape GBFS BayWheels bike share data via Telegraf http plugin, store in InfluxDB and visualize in Grafana 🚀
 
 https://github.com/coding-to-music/baywheels-gbfs-influxdb-telegraf-grafana-docker
 
