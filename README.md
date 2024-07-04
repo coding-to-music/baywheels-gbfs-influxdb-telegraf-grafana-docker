@@ -115,6 +115,8 @@ I ideally wanted to chart the station information with the actual station names 
 
 An InfluxDB task can be easily created with Flux through the Data Explorer:
 
+![image](/images/flux-Query-Editor.jpg)
+
 Flux Query for “baywheels_enriched” task:
 
 ```flux
@@ -144,11 +146,17 @@ join(tables: {live: live_data, meta: metadata}, on: ["station_id"], method: "inn
 
 Now with my new “baywheels_enriched” table, I can filter and query based off the Bay Wheels station metadata. I can search directly by station name, location, or in the example below select all stations in a particular region of the Bay Area.
 
+![image](/images/query-1.jpg)
+
 In my visualizations, I can now see all the station information from both the station status and metadata tables.
+
+![image](/images/graphs-fields.jpg)
 
 ## Setting up alerting & monitoring
 
 My initial idea of getting bike information into InfluxDB was to set up an alerting system when stations I regularly would get bikes from were running low. I set up Slack as an endpoint for the notifications so I would get a Slack message whenever one of these stations were running low and out of bikes. I can set up thresholds for critical, warning, info, and okay and determine when to get messaged. Here's a great blog by Katy that shows you how to step-by-step on how to set up a check & alert in Cloud 2.0. I chose to get a Slack message at any of these checks (example below show the 19th Street Station at good levels around 5 pm).
+
+![image](/images/alerting-monitoring-slack-influxdb.png)
 
 So next time the 19th Street BART Station is running low on bikes, I'll know to run out of the office as soon as possible to snag the last one (or know to head to a different station) :P
 
