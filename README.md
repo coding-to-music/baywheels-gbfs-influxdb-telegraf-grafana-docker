@@ -106,7 +106,7 @@ My first InfluxDB setup was pulling local machine metrics on the InfluxDB 2.0 al
   ##   1. Local               -- interpret based on machine localtime
   ##   2. "America/New_York"  -- Unix TZ values like those found in https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   ##   3. UTC                 -- or blank/unspecified, will return timestamp in UTC
-  json_timezone = ""Copy
+  json_timezone = ""
 ```
 
 ## Data enrichment using Tasks & Flux
@@ -116,6 +116,10 @@ I ideally wanted to chart the station information with the actual station names 
 An InfluxDB task can be easily created with Flux through the Data Explorer:
 
 ![image](/images/flux-Query-Editor.jpg)
+
+![image](/images/Data-Explorer-save-as.jpg)
+
+![image](/images/Edit-Task-dashboard.jpg)
 
 Flux Query for “baywheels_enriched” task:
 
