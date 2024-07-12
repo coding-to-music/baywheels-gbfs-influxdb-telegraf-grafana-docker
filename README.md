@@ -118,6 +118,8 @@ InfluxDB Cloud
 - Create a bucket called telegraf_baywheels
 - Create an API key
 
+save the API key and export it so Telegraf can read it
+
 ```bash
 export INFLUX_TOKEN=<secret goes here>
 ```
