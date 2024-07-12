@@ -50,7 +50,7 @@ My first InfluxDB setup was pulling local machine metrics on the InfluxDB 2.0 al
   urls = [
     "https://gbfs.baywheels.com/gbfs/en/station_information.json"
   ]
-  name_override = "baywheels_meta"
+  name_override = "baywheels_stations"
   tagexclude = ["url"]
   ## HTTP method
   method = "GET"
@@ -109,6 +109,58 @@ My first InfluxDB setup was pulling local machine metrics on the InfluxDB 2.0 al
   json_timezone = ""
 ```
 
+## Save the telegraf file and test it
+
+save the file as `baywheels.telegraf`
+
+InfluxDB Cloud
+
+- Create a bucket called telegraf_baywheels
+- Create an API key
+
+```bash
+export INFLUX_TOKEN=<secret goes here>
+```
+
+Test running the telegraf
+
+```bash
+telegraf --config baywheels.telegraf --once
+```
+
+output
+
+```bash
+2024-07-12T03:22:49Z I! Loading config: baywheels.telegraf
+2024-07-12T03:22:49Z I! Starting Telegraf 1.30.2 brought to you by InfluxData the makers of InfluxDB
+2024-07-12T03:22:49Z I! Available plugins: 233 inputs, 9 aggregators, 31 processors, 24 parsers, 60 outputs, 6 secret-stores
+2024-07-12T03:22:49Z I! Loaded inputs: http
+2024-07-12T03:22:49Z I! Loaded aggregators:
+2024-07-12T03:22:49Z I! Loaded processors:
+2024-07-12T03:22:49Z I! Loaded secretstores:
+2024-07-12T03:22:49Z I! Loaded outputs: influxdb_v2
+2024-07-12T03:22:49Z I! Tags enabled: host=contabo6
+2024-07-12T03:22:50Z I! [agent] Hang on, flushing any cached metrics before shutdown
+2024-07-12T03:22:50Z I! [agent] Stopping running outputs
+```
+
+Go into InfluxDB Cloud
+
+Use the data explorer
+
+choose bucket `telegraf_baywheels`
+
+run this query:
+
+```bash
+SELECT *
+FROM "baywheels_stations"
+```
+
+You will see a table of all the stations and their capacity (number of bike-docks)
+
+However, there is no time column so cannot make graphs...
+
 ## Data enrichment using Tasks & Flux
 
 I ideally wanted to chart the station information with the actual station names and filter/query by regions and cities. In order to do so, I needed to enrich the data by joining the two measurements I created in InfluxDB (from station status and metadata). With Flux, I could also calculate a new usage metric to see what percentage of bikes at a station are currently in use. I was able to get a task up and running rather quickly with my Flux query by creating a task through Data Explorer. Tasks are Flux scripts that run periodically to modify or analyze streams of data and output them to a new data source  in my case, taking the reported data from my two Bay Wheels tables and joining them every minute to a new “baywheels_enriched” source.
@@ -128,7 +180,7 @@ import "math"
 metadata = from(bucket: "telegraf")
     |> range(start: -10m)
     |> filter(fn: (r) =>
-        (r._measurement == "baywheels_meta"))
+        (r._measurement == "baywheels_stations"))
     |> last()
     |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
     |> group()
